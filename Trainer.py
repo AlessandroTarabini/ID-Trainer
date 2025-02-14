@@ -11,7 +11,7 @@ import matplotlib as mpl
 mpl.rcParams['figure.dpi'] = 200
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
-import tensorflow as tf
+# import tensorflow as tf
 import random
 import numpy as np
 
@@ -22,12 +22,11 @@ from uncertainties.umath import *
 
 # In[2]:
 
-
-try:
-    tf.reset_default_graph()
-except AttributeError:
-    tf.compat.v1.reset_default_graph()
-    tf.compat.v1.disable_eager_execution()
+# try:
+#     tf.reset_default_graph()
+# except AttributeError:
+#     tf.compat.v1.reset_default_graph()
+#     tf.compat.v1.disable_eager_execution()
 
 
 # ## Check if notebook or script and import the right config
@@ -49,6 +48,8 @@ def in_ipynb():
 
 # In[4]:
 
+import sys
+sys.path.append("/eos/user/a/atarabin/photonID/ID-Trainer/Configs")
 
 if in_ipynb():
     print("In IPython")
@@ -59,13 +60,13 @@ else:
     print("Importing settings from "+ TrainConfig.replace("/", "."))
     #exec("from "+TrainConfig+" import *")
     importConfig=TrainConfig.replace("/", ".")
+    print(importConfig)
     exec("import "+importConfig+" as Conf")
-
+    print("step2")
 
 # ## Set some default options
 
 # In[5]:
-
 
 def modify(df):
     return 0
@@ -88,9 +89,9 @@ print(Conf.CMSLabel)
 # In[6]:
 
 
-tf.compat.v1.random.set_random_seed(Conf.RandomState)
-random.seed(Conf.RandomState)
-np.random.seed(Conf.RandomState)
+# tf.compat.v1.random.set_random_seed(Conf.RandomState)
+# random.seed(Conf.RandomState)
+# np.random.seed(Conf.RandomState)
 
 
 # ## Get uproot (uproot3 needed)
@@ -104,7 +105,7 @@ try:
   import uproot3 as uproot
 except ImportError:
   import uproot
-
+print("uproot imported:", uproot.__version__)
 
 # In[8]:
 
@@ -145,7 +146,7 @@ prGreen("Making output directory")
 os.system("mkdir -p " + Conf.OutputDirName)
 os.system("mkdir -p " + Conf.OutputDirName+"/CodeANDConfig")
 os.system("mkdir -p " + Conf.OutputDirName+"/Thresholds")
-os.system("cp "+TrainConfig+".py ./"+ Conf.OutputDirName+"/CodeANDConfig/")
+os.system("cp Configs/"+TrainConfig+".py ./"+ Conf.OutputDirName+"/CodeANDConfig/")
 os.system("cp Trainer.py ./"+ Conf.OutputDirName+"/CodeANDConfig/")
 
 
@@ -170,13 +171,13 @@ import os
 
 import pandas as pd
 if Conf.loadfromsaved:
-    df_final=pd.read_parquet(Conf.OutputDirName+'/df.parquet.gzip')
+    df_final=pd.read_parquet(Conf.OutputDirName+'/df.parquet.snappy')
 else:
     df_final=readData.daskframe_from_rootfiles(Conf.processes,Conf.Tree,branches=Conf.branches,flatten=Conf.flatten,debug=Conf.Debug)
     if hasattr(Conf, 'SaveDataFrameCSV'):
         if Conf.SaveDataFrameCSV:
             prGreen("Saving DataFrame : It can take sometime")
-            df_final.to_parquet(Conf.OutputDirName+'/df.parquet.gzip',compression='gzip')
+            df_final.to_parquet(Conf.OutputDirName+'/df.parquet.snappy',compression='snappy')
 
 
 # In[14]:
@@ -337,12 +338,12 @@ if any(hasattr(Conf, attr) for attr in ['Reweighing', 'ptbins','ptwtvar','etawtv
                                      bins=Conf.etabins,
                                      #[i for i in range(len(Conf.etabins)-1)],
                                      alpha=0.7,label=i, ax=ax[0], density=False, ls='-', weights =group_df["xsecwt"],linewidth=2)
-        ax[0].set_title("$\eta$ before reweighting")
+        ax[0].set_title(r"$\eta$ before reweighting")
         ax[0].legend()
         group_df[Conf.etawtvar].hist(histtype='step',
                                      bins=Conf.etabins,
                                      alpha=0.7,label=i, ax=ax[1], density=False, ls='-', weights =group_df["NewWt"],linewidth=2)
-        ax[1].set_title("$\eta$ after reweighting")
+        ax[1].set_title(r"$\eta$ after reweighting")
         ax[1].legend()
     fig.savefig(Conf.OutputDirName+"/eta_rwt.pdf")
 
@@ -436,23 +437,23 @@ for MVA in Conf.MVAs:
         ax.set_xlabel("Xgboost Feature Importance")
         fig.savefig(Conf.OutputDirName+"/"+MVA["MVAtype"]+"/"+MVA["MVAtype"]+"_"+"_Importance_.png")
         results = cv.best_estimator_.evals_result()
-        if len(Conf.Classes)<3:
-            epochs = len(results['validation_0']['error'])
-        else:
-            epochs = len(results['validation_0']['merror'])
-        x_axis = range(0, epochs)
-        fig, ax = plt.subplots(figsize=(5,5))
-        if len(Conf.Classes)<3:
-            ax.plot(x_axis, results['validation_0']['error'], label='Train')
-            ax.plot(x_axis, results['validation_1']['error'], label='Test')
-        else:
-            ax.plot(x_axis, results['validation_0']['merror'], label='Train')
-            ax.plot(x_axis, results['validation_1']['merror'], label='Test')
-        ax.legend()
-        ax.set_ylabel('error')
-        ax.set_xlabel('epochs')
-        ax.set_title(MVA["Label"]+' XGBoost Error')
-        fig.savefig(Conf.OutputDirName+"/"+MVA["MVAtype"]+"/"+MVA["MVAtype"]+"_"+"_error_.png")
+        # if len(Conf.Classes)<3:
+        #     epochs = len(results['validation_0']['error'])
+        # else:
+        #     epochs = len(results['validation_0']['merror'])
+        # x_axis = range(0, epochs)
+        # fig, ax = plt.subplots(figsize=(5,5))
+        # if len(Conf.Classes)<3:
+        #     ax.plot(x_axis, results['validation_0']['error'], label='Train')
+        #     ax.plot(x_axis, results['validation_1']['error'], label='Test')
+        # else:
+        #     ax.plot(x_axis, results['validation_0']['merror'], label='Train')
+        #     ax.plot(x_axis, results['validation_1']['merror'], label='Test')
+        # ax.legend()
+        # ax.set_ylabel('error')
+        # ax.set_xlabel('epochs')
+        # ax.set_title(MVA["Label"]+' XGBoost Error')
+        # fig.savefig(Conf.OutputDirName+"/"+MVA["MVAtype"]+"/"+MVA["MVAtype"]+"_"+"_error_.png")
         print("All XGBoost parameters")
         print(cv.get_params())
         y_test_pred=cv.predict_proba(X_test)
@@ -792,7 +793,7 @@ if hasattr(Conf, 'SigEffWPs')and len(Conf.SigEffWPs)>0:
 
         variables=['ele_pt_bin','ele_eta_bin']
         bins=[Conf.ptbins,Conf.etabins]
-        xaxislabels=['$p_T$ (GeV)','$\eta$']
+        xaxislabels=[r'$p_T$ (GeV)',r'$\eta$']
         Wps=Conf.OverlayWP
 
         for variable,xaxislabel,binn in zip(variables,xaxislabels,bins):
