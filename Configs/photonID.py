@@ -27,12 +27,12 @@ processes=[
     {'Class':'IsolatedSignal','path':'/eos/user/a/atarabin/photonID/samples/hadded.root',
      #Can be a single root file, a list of root file, or even a folder but in a tuple format (folder,fileextension), like ('./samples','.root')
      'xsecwt': 1, #can be a number or a branch name, like 'weight' #Will go into training
-     'selection':'(pT > 10) & ((abs(eta) < 1.442) | (abs(eta) > 1.566)) & (abs(eta) < 2.5) & (matchedToGenPh==1)', #selection for background
+     'selection':'(pT > 10) & ((abs(pho_SCEta) < 1.442) | (abs(pho_SCEta) > 1.566)) & (abs(eta) < 2.5) & (matchedToGenPh==1)', #selection for background
     },
     {'Class':'NonIsolated','path':'/eos/user/a/atarabin/photonID/samples/hadded.root',
      #Can be a single root file, a list of root file, or even a folder but in a tuple format (folder,fileextension), like ('./samples','.root')
      'xsecwt': 1, #can be a number or a branch name, like 'weight' #Will go into training
-     'selection':'(pT > 10) & ((abs(eta) < 1.442) | (abs(eta) > 1.566)) & (abs(eta) < 2.5)  & (matchedToGenPh==0)', #selection for background
+     'selection':'(pT > 10) & ((abs(pho_SCEta) < 1.442) | (abs(pho_SCEta) > 1.566)) & (abs(pho_SCEta) < 2.5)  & ((matchedToGenPh==0) | (matchedToGenPh==2))', #selection for background
     },
 ]
 
@@ -62,6 +62,18 @@ MVAs = [
 #------------------------------------------#------------------------------------------
 ######################################################################################################
 ######### Everything below this line is optinal ################################################
+
+##############for 2D pt-eta reweighing
+Reweighing = 'True' # This is independent of xsec reweighing (this reweighing will be done after taking into account xsec weight of multiple samples).
+##############Even if this is 'False', xsec reweighting will always be carried to the training.
+WhichClassToReweightTo="NonIsolated" #2D pt-eta spectrum of all other classs will be reweighted to this class
+#------------------------------------------
+ptbins = [10,20,30,40,50,60,80,100,5000]
+etabins = [-2.5,-2.2,-2.0,-1.8,-1.566,-1.442,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.442,1.566,1.8,2.0,2.2,2.5]
+ptwtvar='pT'
+etawtvar='pho_SCEta'
+############# pt and eta bins of interest and branch names to read
+############# (will be used for robustness studies and will also be used for 2D pt-eta reweighing) if the reweighing option is True
 
 #------------------------------------------#Optional parameters below (Can be commented)
 '''
