@@ -16,7 +16,7 @@ Debug=False # If True, only a small subset of events/objects are used for either
 
 #Branches to read #Should be in the root files #Only the read branches can be later used for any purpose
 # branches=["scl_eta","ele*","matched*","EleMVACats",'passElectronSelection','Fall*']
-branches=['pho*', 'pT', 'eta', 'matchedToGenPh',  'evt_rho']
+branches=['pho*', 'pT', 'eta', 'matchedToGenPh',  'evt_rho', 'xs']
 
 SaveDataFrameCSV,loadfromsaved=True,False #If loadfromsaved=True, dataframe stored in OutputDirName will be read
 
@@ -24,14 +24,14 @@ Classes,ClassColors = ['IsolatedSignal','NonIsolated'],['#377eb8', '#ff7f00']
 #Remeber: For binary classification, first class of the Classes argument should be signal, otherwise, plots might not make sense.
 
 processes=[
-    {'Class':'IsolatedSignal','path':'/eos/user/a/atarabin/photonID/samples/hadded.root',
+    {'Class':'IsolatedSignal','path':['/eos/user/a/atarabin/photonID/samples/hadded_low_newGenMatch.root', '/eos/user/a/atarabin/photonID/samples/hadded_high_newGenMatch.root'],
      #Can be a single root file, a list of root file, or even a folder but in a tuple format (folder,fileextension), like ('./samples','.root')
-     'xsecwt': 1, #can be a number or a branch name, like 'weight' #Will go into training
+     'xsecwt': 'xs', #can be a number or a branch name, like 'weight' #Will go into training
      'selection':'(pT > 10) & ((abs(pho_SCEta) < 1.442) | (abs(pho_SCEta) > 1.566)) & (abs(eta) < 2.5) & (matchedToGenPh==1)', #selection for background
     },
-    {'Class':'NonIsolated','path':'/eos/user/a/atarabin/photonID/samples/hadded.root',
+    {'Class':'NonIsolated','path':['/eos/user/a/atarabin/photonID/samples/hadded_low_newGenMatch.root', '/eos/user/a/atarabin/photonID/samples/hadded_high_newGenMatch.root'],
      #Can be a single root file, a list of root file, or even a folder but in a tuple format (folder,fileextension), like ('./samples','.root')
-     'xsecwt': 1, #can be a number or a branch name, like 'weight' #Will go into training
+     'xsecwt': 'xs', #can be a number or a branch name, like 'weight' #Will go into training
      'selection':'(pT > 10) & ((abs(pho_SCEta) < 1.442) | (abs(pho_SCEta) > 1.566)) & (abs(pho_SCEta) < 2.5)  & ((matchedToGenPh==0) | (matchedToGenPh==2))', #selection for background
     },
 ]
@@ -68,7 +68,7 @@ Reweighing = 'True' # This is independent of xsec reweighing (this reweighing wi
 ##############Even if this is 'False', xsec reweighting will always be carried to the training.
 WhichClassToReweightTo="NonIsolated" #2D pt-eta spectrum of all other classs will be reweighted to this class
 #------------------------------------------
-ptbins = [10,20,30,40,50,60,80,100,5000]
+ptbins = [10,15,18,20,23,26,30,33,37,40,44,48,53,60,70,85,250]
 etabins = [-2.5,-2.2,-2.0,-1.8,-1.566,-1.442,-1.2,-1.0,-0.8,-0.6,-0.4,-0.2,0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.442,1.566,1.8,2.0,2.2,2.5]
 ptwtvar='pT'
 etawtvar='pho_SCEta'

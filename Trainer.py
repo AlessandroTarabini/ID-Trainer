@@ -317,8 +317,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Save pandas for inspection
-df_final.to_parquet("df.parquet", engine="pyarrow")
+# Save pandas after reweighting for inspection
+df_final.to_parquet(Conf.OutputDirName+"/dfPostReweighting.parquet", engine="pyarrow")
 
 if any(hasattr(Conf, attr) for attr in ['Reweighing', 'ptbins','ptwtvar','etawtvar','etabins','WhichClassToReweightTo']):
 
