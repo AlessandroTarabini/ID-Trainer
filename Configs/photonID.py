@@ -24,12 +24,12 @@ Classes,ClassColors = ['IsolatedSignal','NonIsolated'],['#377eb8', '#ff7f00']
 #Remeber: For binary classification, first class of the Classes argument should be signal, otherwise, plots might not make sense.
 
 processes=[
-    {'Class':'IsolatedSignal','path':['/eos/user/a/atarabin/photonID/samples/hadded_low_newGenMatch.root', '/eos/user/a/atarabin/photonID/samples/hadded_high_newGenMatch.root'],
+    {'Class':'IsolatedSignal','path':['/eos/user/a/atarabin/photonID/ID-Trainer/samples/hadded_low_newGenMatch.root', '/eos/user/a/atarabin/photonID/ID-Trainer/samples/hadded_high_newGenMatch.root'],
      #Can be a single root file, a list of root file, or even a folder but in a tuple format (folder,fileextension), like ('./samples','.root')
      'xsecwt': 'xs', #can be a number or a branch name, like 'weight' #Will go into training
      'selection':'(pT > 10) & ((abs(pho_SCEta) < 1.442) | (abs(pho_SCEta) > 1.566)) & (abs(eta) < 2.5) & (matchedToGenPh==1)', #selection for background
     },
-    {'Class':'NonIsolated','path':['/eos/user/a/atarabin/photonID/samples/hadded_low_newGenMatch.root', '/eos/user/a/atarabin/photonID/samples/hadded_high_newGenMatch.root'],
+    {'Class':'NonIsolated','path':['/eos/user/a/atarabin/photonID/ID-Trainer/samples/hadded_low_newGenMatch.root', '/eos/user/a/atarabin/photonID/ID-Trainer/samples/hadded_high_newGenMatch.root'],
      #Can be a single root file, a list of root file, or even a folder but in a tuple format (folder,fileextension), like ('./samples','.root')
      'xsecwt': 'xs', #can be a number or a branch name, like 'weight' #Will go into training
      'selection':'(pT > 10) & ((abs(pho_SCEta) < 1.442) | (abs(pho_SCEta) > 1.566)) & (abs(pho_SCEta) < 2.5)  & ((matchedToGenPh==0) | (matchedToGenPh==2))', #selection for background
